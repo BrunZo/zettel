@@ -1,5 +1,3 @@
-'use client';
-
 import { ZettelMeta } from "../lib/types";
 import Zettel from "./zettel";
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { filterZettels, numPages, allTags } from '../lib/retrieve';
 import ZettelGrid from './zettel_grid';
 import Pagination from './components/pagination';
@@ -34,8 +35,6 @@ export default async function ZettelSearch({ searchParams }: ZettelSearchProps) 
     numPages(filters),
     allTags()
   ]);
-
-  console.log(zettels);
 
   return (
     <>

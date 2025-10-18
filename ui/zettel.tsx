@@ -1,5 +1,3 @@
-'use client';
-
 import React from "react";
 import { ZettelMeta } from "../lib/types";
 import Tag from "./components/tag";
@@ -35,7 +33,7 @@ export default function Zettel({
           className='flex flex-col h-72 p-4 border rounded-[25px] hover:bg-gray-100 overflow-hidden hover:overflow-scroll'
           href={`/notes/${id}`}
         >
-          {showTitle && <h1 className='font-bold text-gray-800 text-2xl m-0'>{title}</h1>}
+          {showTitle && <span className='font-bold text-gray-800 text-2xl m-0'>{title}</span>}
           {showDate && <p className='text-gray-500 text-sm'>{date.toLocaleString()}</p>}
           {showTags && tags?.length && (
             <div className='flex flex-wrap gap-1 mb-1'>
@@ -58,7 +56,7 @@ export default function Zettel({
               {tags.map((tag, index) => (
                 <Tag key={index} tag={tag} />
               ))}
-          </div>
+            </div>
           )}
           <Content />
         </article>

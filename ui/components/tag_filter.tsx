@@ -1,7 +1,7 @@
 'use client';
 
+import React, { useState, useRef, useEffect } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
 
 export default function TagFilter({ availableTags }: { availableTags: string[] }) {
   const searchParams = useSearchParams();
