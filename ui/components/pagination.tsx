@@ -1,6 +1,5 @@
 'use client';
 
-import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import clsx from 'clsx';
 
@@ -58,11 +57,11 @@ function PaginationArrow({ direction, href, isDisabled }: {
     </div>
   ) : (
     <>
-      <Link
+      <a
         href={href}
         className={styles}>
           {direction === 'left' ? '<' : '>'}
-      </Link>
+      </a>
     </>
   )
 }
@@ -82,11 +81,11 @@ function PaginationButton({ page, href, isActive }: {
     <div className={styles}> {page} </div>
   ) : (
     <>
-      <Link
+      <a
         href={href}
         className={styles}>
           {page}
-      </Link>
+      </a>
     </>
   )
 }
