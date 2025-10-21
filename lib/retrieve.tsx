@@ -13,7 +13,7 @@ export async function filterZettels(filters?: {
 }): Promise<ZettelMeta[]> {
   const publicDir = path.join(process.cwd(), "public");
   const mdxFiles = await glob(
-    filters?.globPattern || "**/*.mdx", 
+    filters?.globPattern || "**/*{.jsx,.mdx}", 
     { cwd: publicDir }
   );
   
@@ -27,7 +27,7 @@ export async function filterZettels(filters?: {
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
         if (!zettel.id) {
-          zettel.id = file;
+          zettel.id = file.split(path.sep).pop().split(".")[0];
         }
 
         if (filters?.id && zettel.id !== filters.id) {
