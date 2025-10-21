@@ -59,7 +59,20 @@ export async function filterZettels(filters?: {
   );
   
   zettels = zettels.filter(z => z !== undefined);
-  zettels.sort((a, b) => b.date.getTime() - a.date.getTime());
+  zettels.sort((a, b) => {
+    if (a.date && b.date) {
+      return b.date.getTime() - a.date.getTime();
+    }
+    else if (a.date) {
+      return -1;
+    }
+    else if (b.date) {
+      return 1;
+    }
+    else {
+      return b.id.localeCompare(a.id);
+    }
+  });
 
   if (filters?.page && filters?.limit) {
     const start = (filters.page - 1) * filters.limit;
