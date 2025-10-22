@@ -10,6 +10,7 @@ export async function filterZettels(filters?: {
   tags?: string[];
   page?: number;
   limit?: number;
+  sortMethod?: (a: ZettelMeta, b: ZettelMeta) => number;
 }): Promise<ZettelMeta[]> {
   const publicDir = path.join(process.cwd(), "public");
   const mdxFiles = await glob(
@@ -49,6 +50,7 @@ export async function filterZettels(filters?: {
           date: zettel.date,
           tags: zettel.tags,
           abstract: zettel.abstract,
+          sectionNumber: zettel.sectionNumber,
           Content: zettel.default
         };
       } catch (error) {
@@ -56,10 +58,9 @@ export async function filterZettels(filters?: {
         return undefined;
       }
     })
-  );
-  
-  zettels = zettels.filter(z => z !== undefined);
-  zettels.sort((a, b) => {
+  ).then(zettels => zettels.filter(z => z !== undefined));
+
+  let defaultSortMethod = (a: ZettelMeta, b: ZettelMeta) => {
     if (a.date && b.date) {
       return b.date.getTime() - a.date.getTime();
     }
@@ -70,9 +71,11 @@ export async function filterZettels(filters?: {
       return 1;
     }
     else {
-      return b.id.localeCompare(a.id);
+      return a.id.localeCompare(b.id);
     }
-  });
+  }
+
+  zettels.sort(filters?.sortMethod || defaultSortMethod);
 
   if (filters?.page && filters?.limit) {
     const start = (filters.page - 1) * filters.limit;
