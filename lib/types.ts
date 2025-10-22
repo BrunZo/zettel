@@ -6,5 +6,6 @@ export interface ZettelMeta {
     date: Date;
     tags?: string[];
     abstract?: string;
+    sectionNumber?: number;
     Content?: any;
 };
