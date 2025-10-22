@@ -10,7 +10,7 @@ export type ZettelProps = ZettelMeta & {
   showAbstract?: boolean;
 };
 
-export default function Zettel({
+export default function ZettelDisplay({
   id,
   title,
   date,
@@ -23,9 +23,31 @@ export default function Zettel({
   showTags,
   showAbstract
 }: ZettelProps) {
+  function Title() { 
+    return <span className={`font-bold ${mode == "full" ? "text-4xl" : "text-2xl"} m-0`}>{title || id}</span> 
+  }
+
+  function Date() {
+    return <p className='text-gray-500 text-sm'>{date?.toLocaleDateString()}</p>
+  } 
+
+  function Tags() {
+    return (
+      <div className='flex flex-wrap gap-1 mb-1'>
+        {tags.map((tag, index) => (
+          <Tag key={index} tag={tag} />
+        ))}
+      </div>
+    )
+  }
+
+  function Abstract() {
+    return <p className='text-gray-800 text-md'>{abstract}</p>
+  }
+
   switch (mode) {
     case "link":
-      return <a href={`/notes/${id}`}>{showTitle ? title || id : "Note"}</a>;
+      return <a className='text-gray-500 hover:text-gray-800' href={`/notes/${id}`}>{title || id}</a>;
 
     case "card":
       return (
@@ -33,47 +55,30 @@ export default function Zettel({
           className='flex flex-col h-72 p-4 border rounded-[25px] hover:bg-gray-100 overflow-hidden hover:overflow-scroll'
           href={`/notes/${id}`}
         >
-          {<span className='font-bold text-gray-800 text-2xl m-0'>{title || id}</span>}
-          {showDate && <p className='text-gray-500 text-sm'>{date ? date.toLocaleDateString() : "Unknown"}</p>}
-          {showTags && tags?.length && (
-            <div className='flex flex-wrap gap-1 mb-1'>
-              {tags.map((tag, index) => (
-                <Tag key={index} tag={tag} />
-              ))}
-            </div>
-          )}
-          {showAbstract && <p className='text-gray-800 text-md'>{abstract}</p>}
+          {showTitle !== false && <Title />}
+          {showDate !== false && <Date />}
+          {showTags !== false && tags?.length && <Tags />}
+          {showAbstract !== false && <Abstract />}
         </a>
-      );
-
-    case "full":
-      return (
-        <article className="zettel-full prose">
-          {showTitle && <h1>{title || id}</h1>}
-          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleDateString() : "Unknown"}</p>}
-          {showTags && tags?.length && (
-            <div className='flex flex-wrap gap-1 mb-1'>
-              {tags.map((tag, index) => (
-                <Tag key={index} tag={tag} />
-              ))}
-            </div>
-          )}
-          <Content />
-        </article>
       );
 
     case "semi-full":
       return (
         <article className="zettel-semi-full prose">
-          {showTitle && <h3>{title || id}</h3>}
-          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleDateString() : "Unknown"}</p>}
-          {showTags && tags?.length && (
-            <div className='flex flex-wrap gap-1 mb-1'>
-              {tags.map((tag, index) => (
-                <Tag key={index} tag={tag} />
-              ))}
-            </div>
-          )}
+          {showTitle !== false && <Title />}
+          {showDate !== false && <Date />}
+          {showTags !== false && tags?.length && <Tags />}
+          <Content />
+        </article>
+      );
+
+    case "full":
+      return (
+        <article className="zettel-full prose">
+          {showTitle !== false && <Title />}
+          {showDate !== false && <Date />}
+          {showTags !== false && tags?.length && <Tags />}
+          {showAbstract !== false && <Abstract />}
           <Content />
         </article>
       );
