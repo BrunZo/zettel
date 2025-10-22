@@ -44,8 +44,14 @@ p {
 
 ul {
   @apply list-disc;
-  @apply ml-4;
-  @apply mb-4;
+  @apply ml-8;
+  @apply mb-0;
+}
+
+ol {
+  @apply list-decimal;
+  @apply ml-8;
+  @apply mb-0;
 }
 
 /* LaTeX math styling */
