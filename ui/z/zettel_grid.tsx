@@ -1,4 +1,4 @@
-import { ZettelMeta } from "../lib/types";
+import { ZettelMeta } from "../../lib/types";
 import ZettelDisplay from "./zettel";
 
 export default function ZettelGrid({ zettels }: { zettels: ZettelMeta[] }) {

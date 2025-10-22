@@ -1,6 +1,6 @@
 import React from "react";
 import ZettelDisplay from "./zettel";
-import { ZettelMeta } from "../lib/types";
+import { ZettelMeta } from "../../lib/types";
 
 export default async function ZettelList({ zettels }: { zettels: ZettelMeta[] }) {
     return (

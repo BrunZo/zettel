@@ -1,9 +1,9 @@
 import React from 'react';
-import { filterZettels, numPages, allTags } from '../lib/retrieve';
-import ZettelGrid from './zettel_grid';
-import Pagination from './components/pagination';
-import Search from './components/search';
-import TagFilter from './components/tag_filter';
+import { filterZettels, numPages, allTags } from '../../lib/retrieve';
+import ZettelGrid from '../z/zettel_grid';
+import Pagination from '../components/pagination';
+import Search from '../components/search';
+import TagFilter from '../components/tag_filter';
 
 interface ZettelSearchProps {
   searchParams?: Promise<{

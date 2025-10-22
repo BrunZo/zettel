@@ -1,6 +1,6 @@
 import React from "react";
-import { ZettelMeta } from "../lib/types";
-import Tag from "./components/tag";
+import { ZettelMeta } from "../../lib/types";
+import Tag from "../components/tag";
 
 export type ZettelProps = ZettelMeta & {
   mode?: "link" | "card" | "full" | "semi-full";

@@ -1,5 +1,5 @@
 import React from "react";
-import ZettelDisplay from "../ui/zettel";
+import ZettelDisplay from "../ui/z/zettel";
 import { zettelById } from "./retrieve";
 
 export const Zettel = new Proxy({}, {
