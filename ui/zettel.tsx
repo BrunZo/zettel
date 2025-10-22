@@ -25,7 +25,7 @@ export default function Zettel({
 }: ZettelProps) {
   switch (mode) {
     case "link":
-      return <a href={`/notes/${id}`}>{showTitle ? title : "Note"}</a>;
+      return <a href={`/notes/${id}`}>{showTitle ? title || id : "Note"}</a>;
 
     case "card":
       return (
@@ -33,8 +33,8 @@ export default function Zettel({
           className='flex flex-col h-72 p-4 border rounded-[25px] hover:bg-gray-100 overflow-hidden hover:overflow-scroll'
           href={`/notes/${id}`}
         >
-          {showTitle && <span className='font-bold text-gray-800 text-2xl m-0'>{title}</span>}
-          {showDate && <p className='text-gray-500 text-sm'>{date.toLocaleString()}</p>}
+          {showTitle && <span className='font-bold text-gray-800 text-2xl m-0'>{title || id}</span>}
+          {showDate && <p className='text-gray-500 text-sm'>{date ? date.toLocaleString() : "Unknown"}</p>}
           {showTags && tags?.length && (
             <div className='flex flex-wrap gap-1 mb-1'>
               {tags.map((tag, index) => (
@@ -49,8 +49,8 @@ export default function Zettel({
     case "full":
       return (
         <article className="zettel-full prose">
-          {showTitle && <h1>{title}</h1>}
-          {showDate && <p className='text-gray-500 text-sm'>{new Date(date).toLocaleString()}</p>}
+          {showTitle && <h1>{title || id}</h1>}
+          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleString() : "Unknown"}</p>}
           {showTags && tags?.length && (
             <div className='flex flex-wrap gap-1 mb-1'>
               {tags.map((tag, index) => (

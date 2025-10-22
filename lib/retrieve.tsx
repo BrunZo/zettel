@@ -13,7 +13,7 @@ export async function filterZettels(filters?: {
 }): Promise<ZettelMeta[]> {
   const publicDir = path.join(process.cwd(), "public");
   const mdxFiles = await glob(
-    filters?.globPattern || "**/*.mdx", 
+    filters?.globPattern || "**/*{.jsx,.mdx}", 
     { cwd: publicDir }
   );
   
@@ -27,7 +27,7 @@ export async function filterZettels(filters?: {
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
         if (!zettel.id) {
-          zettel.id = file;
+          zettel.id = file.split(path.sep).pop().split(".")[0];
         }
 
         if (filters?.id && zettel.id !== filters.id) {
@@ -59,7 +59,20 @@ export async function filterZettels(filters?: {
   );
   
   zettels = zettels.filter(z => z !== undefined);
-  zettels.sort((a, b) => b.date.getTime() - a.date.getTime());
+  zettels.sort((a, b) => {
+    if (a.date && b.date) {
+      return b.date.getTime() - a.date.getTime();
+    }
+    else if (a.date) {
+      return -1;
+    }
+    else if (b.date) {
+      return 1;
+    }
+    else {
+      return b.id.localeCompare(a.id);
+    }
+  });
 
   if (filters?.page && filters?.limit) {
     const start = (filters.page - 1) * filters.limit;
