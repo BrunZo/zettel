@@ -3,7 +3,7 @@ import { ZettelMeta } from "../lib/types";
 import Tag from "./components/tag";
 
 export type ZettelProps = ZettelMeta & {
-  mode?: "link" | "card" | "full";
+  mode?: "link" | "card" | "full" | "semi-full";
   showTitle?: boolean;
   showDate?: boolean;
   showTags?: boolean;
@@ -18,10 +18,10 @@ export default function Zettel({
   abstract,
   Content,
   mode = "full",
-  showTitle = true,
-  showDate = true,
-  showTags = true,
-  showAbstract = true
+  showTitle,
+  showDate,
+  showTags,
+  showAbstract
 }: ZettelProps) {
   switch (mode) {
     case "link":
@@ -33,8 +33,8 @@ export default function Zettel({
           className='flex flex-col h-72 p-4 border rounded-[25px] hover:bg-gray-100 overflow-hidden hover:overflow-scroll'
           href={`/notes/${id}`}
         >
-          {showTitle && <span className='font-bold text-gray-800 text-2xl m-0'>{title || id}</span>}
-          {showDate && <p className='text-gray-500 text-sm'>{date ? date.toLocaleString() : "Unknown"}</p>}
+          {<span className='font-bold text-gray-800 text-2xl m-0'>{title || id}</span>}
+          {showDate && <p className='text-gray-500 text-sm'>{date ? date.toLocaleDateString() : "Unknown"}</p>}
           {showTags && tags?.length && (
             <div className='flex flex-wrap gap-1 mb-1'>
               {tags.map((tag, index) => (
@@ -50,7 +50,23 @@ export default function Zettel({
       return (
         <article className="zettel-full prose">
           {showTitle && <h1>{title || id}</h1>}
-          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleString() : "Unknown"}</p>}
+          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleDateString() : "Unknown"}</p>}
+          {showTags && tags?.length && (
+            <div className='flex flex-wrap gap-1 mb-1'>
+              {tags.map((tag, index) => (
+                <Tag key={index} tag={tag} />
+              ))}
+            </div>
+          )}
+          <Content />
+        </article>
+      );
+
+    case "semi-full":
+      return (
+        <article className="zettel-semi-full prose">
+          {showTitle && <h3>{title || id}</h3>}
+          {showDate && <p className='text-gray-500 text-sm'>{date ? new Date(date).toLocaleDateString() : "Unknown"}</p>}
           {showTags && tags?.length && (
             <div className='flex flex-wrap gap-1 mb-1'>
               {tags.map((tag, index) => (
