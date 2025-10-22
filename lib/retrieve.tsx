@@ -90,7 +90,11 @@ export async function numPages(filters: {
   tags?: string[];
   limit?: number;
 }): Promise<number> {
-  const zettels = await filterZettels(filters);
+  const zettels = await filterZettels({
+    globPattern: filters.globPattern,
+    query: filters.query,
+    tags: filters.tags
+  });
   return Math.ceil(zettels.length / (filters.limit || 6));
 }
 
