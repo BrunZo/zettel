@@ -10,10 +10,14 @@ interface ZettelSearchProps {
     query?: string;
     tags?: string | string[];
     page?: string;
-  }>;
+  }>,
+  globPattern?: string;
 }
 
-export default async function ZettelSearch({ searchParams }: ZettelSearchProps) {
+export default async function ZettelSearch({ 
+  searchParams,
+  globPattern
+}: ZettelSearchProps) {
   const params = await searchParams;
 
   const tagsParam = params?.tags;
@@ -24,6 +28,7 @@ export default async function ZettelSearch({ searchParams }: ZettelSearchProps) 
       : undefined;
 
   const filters = {
+    globPattern: globPattern,
     query: params?.query,
     tags,
     page: parseInt(params?.page || "1"),
