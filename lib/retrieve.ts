@@ -1,9 +1,11 @@
-import { ZettelMeta } from "./types";
+import fs from "fs";
 import { glob } from "glob";
 import path from "path";
-import fs from "fs";
 
-export async function filterZettels(filters?: {
+import { ZettelMeta } from "./types";
+import { zettelsMap } from "../zettels.mjs";
+
+export async function filterZettels(filters: {
   globPattern?: string;
   id?: string;
   query?: string;
@@ -14,16 +16,16 @@ export async function filterZettels(filters?: {
 }): Promise<ZettelMeta[]> {
   const publicDir = path.join(process.cwd(), "public");
   const mdxFiles = await glob(
-    filters?.globPattern || "**/*{.jsx,.mdx}", 
+    filters.globPattern || "**/*{.jsx,.mdx}", 
     { cwd: publicDir }
   );
   
   let zettels: ZettelMeta[] = await Promise.all(
     mdxFiles.map(async (file: string): Promise<ZettelMeta | undefined> => {
       try {
-        let zettel = await import(`public/${file}`);
-
-        let content_string = fs.readFileSync(path.join(publicDir, file), "utf8")
+        const trimmedPath = file.substring(0, file.length - 1)
+        let zettel = await import(`public/${trimmedPath}x`);
+        let content_string = fs.readFileSync(`public/${trimmedPath}x`, "utf8")
                                .replace(/^export const .* = /gm, "")
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
@@ -101,8 +103,13 @@ export async function numPages(filters: {
   return Math.ceil(zettels.length / (filters.limit || 6));
 }
 
-export async function allTags(): Promise<string[]> {
-  const zettels = await filterZettels();
+export async function allTags(filters: {
+  globPattern?: string;
+  query?: string;
+  tags?: string[];
+  limit?: number;
+}): Promise<string[]> {
+  const zettels = await filterZettels(filters);
   const allTags = zettels.flatMap(z => z.tags || []);
   return [...new Set(allTags)].sort();
 }
