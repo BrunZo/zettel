@@ -38,7 +38,7 @@ export default async function ZettelSearch({
   const [zettels, totalPages, availableTags] = await Promise.all([
     filterZettels(filters),
     numPages(filters),
-    allTags()
+    allTags(filters)
   ]);
 
   return (
