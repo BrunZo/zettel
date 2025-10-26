@@ -3,7 +3,6 @@ import { glob } from "glob";
 import path from "path";
 
 import { ZettelMeta } from "./types";
-import { zettelsMap } from "../zettels.mjs";
 
 export async function filterZettels(filters: {
   globPattern?: string;
