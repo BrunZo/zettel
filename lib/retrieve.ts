@@ -13,7 +13,7 @@ export async function filterZettels(filters: {
   limit?: number;
   sortMethod?: (a: ZettelMeta, b: ZettelMeta) => number;
 }): Promise<ZettelMeta[]> {
-  const publicDir = path.join(process.cwd(), "public");
+  const publicDir = path.join(process.cwd(), "notes");
   const mdxFiles = await glob(
     filters.globPattern || "**/*{.jsx,.mdx}", 
     { cwd: publicDir }
@@ -22,8 +22,8 @@ export async function filterZettels(filters: {
   let zettels: ZettelMeta[] = await Promise.all(
     mdxFiles.map(async (filePath: string): Promise<ZettelMeta | undefined> => {
       try {
-        let zettel = await import(`public/${filePath}`);
-        let content_string = fs.readFileSync(`public/${filePath}`, "utf8")
+        let zettel = await import(`notes/${filePath}`);
+        let content_string = fs.readFileSync(`notes/${filePath}`, "utf8")
                                .replace(/^export const .* = /gm, "");
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
