@@ -20,17 +20,14 @@ export async function filterZettels(filters: {
   );
   
   let zettels: ZettelMeta[] = await Promise.all(
-    mdxFiles.map(async (file: string): Promise<ZettelMeta | undefined> => {
+    mdxFiles.map(async (filePath: string): Promise<ZettelMeta | undefined> => {
       try {
-        const trimmedPath = file.substring(0, file.length - 1)
-        let zettel = await import(`public/${trimmedPath}x`);
-        let content_string = fs.readFileSync(`public/${trimmedPath}x`, "utf8")
-                               .replace(/^export const .* = /gm, "")
+        let zettel = await import(`public/${filePath}`);
+        let content_string = fs.readFileSync(`public/${filePath}`, "utf8")
+                               .replace(/^export const .* = /gm, "");
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
-        if (!zettel.id) {
-          zettel.id = file.split(path.sep).pop().split(".")[0];
-        }
+        let zettelId = zettel.id || filePath.split(path.sep).pop().split(".")[0];
 
         if (filters?.id && zettel.id !== filters.id) {
           return undefined;
@@ -46,16 +43,11 @@ export async function filterZettels(filters: {
         }
         
         return {
-          id: zettel.id,
-          title: zettel.title,
-          date: zettel.date,
-          tags: zettel.tags,
-          abstract: zettel.abstract,
-          sectionNumber: zettel.sectionNumber,
-          Content: zettel.default
+          ...zettel,
+          id: zettelId,
         };
       } catch (error) {
-        console.error(`Error loading zettel ${file}:`, error);
+        console.error(`Error loading zettel ${filePath}:`, error);
         return undefined;
       }
     })
