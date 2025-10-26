@@ -28,8 +28,7 @@ export async function filterZettels(filters: {
         let searchable_string = zettel.title + " " + zettel.abstract + " " + content_string;            
 
         let zettelId = zettel.id || filePath.split(path.sep).pop().split(".")[0];
-
-        if (filters?.id && zettel.id !== filters.id) {
+        if (filters?.id && zettelId !== filters.id) {
           return undefined;
         }
 
@@ -45,6 +44,7 @@ export async function filterZettels(filters: {
         return {
           ...zettel,
           id: zettelId,
+          Content: zettel.default,
         };
       } catch (error) {
         console.error(`Error loading zettel ${filePath}:`, error);
