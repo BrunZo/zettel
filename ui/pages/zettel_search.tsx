@@ -41,10 +41,14 @@ export default async function ZettelSearch({
     month,
   };
 
-  const pagedFilters = filters && {
+  const pagedFilters = {
+    ...filters,
     page: parseInt(params?.page || "1"),
     limit: 6
   }
+
+  console.log(filters);
+  console.log(pagedFilters);
 
   const [zettels, totalPages, availableTags, months] = await Promise.all([
     filterZettels(pagedFilters),
