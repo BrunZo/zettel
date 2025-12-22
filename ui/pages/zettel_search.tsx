@@ -54,8 +54,6 @@ export default async function ZettelSearch({
     })
   ]);
 
-  console.log(months);
-
   return (
     <>
       <h1 className='text-gray-800 text-3xl font-bold mt-2'>notes</h1>
@@ -68,8 +66,8 @@ export default async function ZettelSearch({
         </div>
       </div>
       
-      <div className='flex mt-4'>
-        <div className='w-1/4'>
+      <div className='flex flex-col md:flex-row md:gap-2 mt-4'>
+        <div className='w-full md:w-1/4 mb-4 md:mb-0'>
           <MonthSelector availableMonths={months} />
         </div>
         <div className='flex-1'>
