@@ -1,15 +1,18 @@
 import React from 'react';
-import { filterZettels, numPages, allTags } from '../../lib/retrieve';
+import { filterZettels, numPages, allTags, availableMonths } from '../../lib/retrieve';
 import ZettelGrid from '../z/zettel_grid';
 import Pagination from '../components/pagination';
 import Search from '../components/search';
 import TagFilter from '../components/tag_filter';
+import MonthSelector from '../components/month_selector';
 
 interface ZettelSearchProps {
   searchParams?: Promise<{
     query?: string;
     tags?: string | string[];
     page?: string;
+    year?: string;
+    month?: string;
   }>,
   globPattern?: string;
 }
@@ -27,18 +30,28 @@ export default async function ZettelSearch({
       ? tagsParam.split(',') 
       : undefined;
 
+  const year = params?.year ? parseInt(params.year) : undefined;
+  const month = params?.month ? parseInt(params.month) : undefined;
+
   const filters = {
     globPattern: globPattern,
     query: params?.query,
     tags,
+    year,
+    month,
     page: parseInt(params?.page || "1"),
     limit: 6
   };
 
-  const [zettels, totalPages, availableTags] = await Promise.all([
+  const [zettels, totalPages, availableTags, months] = await Promise.all([
     filterZettels(filters),
     numPages(filters),
-    allTags(filters)
+    allTags(filters),
+    availableMonths({
+      globPattern: globPattern,
+      query: params?.query,
+      tags
+    })
   ]);
 
   return (
@@ -53,16 +66,23 @@ export default async function ZettelSearch({
         </div>
       </div>
       
-      {zettels.length > 0 ? (
-        <div className='mt-4'>
-          <ZettelGrid zettels={zettels} />
-          <Pagination numPages={totalPages} /> 
+      <div className='flex flex-col md:flex-row md:gap-2 mt-4'>
+        <div className='w-full md:w-1/4 mb-4 md:mb-0'>
+          <MonthSelector availableMonths={months} />
         </div>
-      ) : (
-        <p className="text-center text-gray-800 italic my-20">
-          Nothing here...
-        </p>
-      )}
+        <div className='flex-1'>
+          {zettels.length > 0 ? (
+            <>
+              <ZettelGrid zettels={zettels} />
+              <Pagination numPages={totalPages} /> 
+            </>
+          ) : (
+            <p className="text-center text-gray-800 italic my-20">
+              Nothing here...
+            </p>
+          )}
+        </div>
+      </div>
     </>
   );
 }

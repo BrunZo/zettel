@@ -9,6 +9,8 @@ export async function filterZettels(filters: {
   id?: string;
   query?: string;
   tags?: string[];
+  year?: number;
+  month?: number;
   page?: number;
   limit?: number;
   sortMethod?: (a: ZettelMeta, b: ZettelMeta) => number;
@@ -39,6 +41,18 @@ export async function filterZettels(filters: {
         if (filters?.tags && filters.tags.length > 0 && 
             !zettel.tags?.some((tag: string) => filters.tags.includes(tag))) {
           return undefined;
+        }
+
+        if (filters?.year) {
+          if (!zettel.date || zettel.date.getFullYear() !== filters.year) {
+            return undefined;
+          }
+        }
+
+        if (filters?.month) {
+          if (!zettel.date || zettel.date.getMonth() !== filters.month) {
+            return undefined;
+          }
         }
         
         return {
@@ -84,12 +98,16 @@ export async function numPages(filters: {
   globPattern?: string;
   query?: string;
   tags?: string[];
+  year?: number;
+  month?: number;
   limit?: number;
 }): Promise<number> {
   const zettels = await filterZettels({
     globPattern: filters.globPattern,
     query: filters.query,
-    tags: filters.tags
+    tags: filters.tags,
+    year: filters.year,
+    month: filters.month
   });
   return Math.ceil(zettels.length / (filters.limit || 6));
 }
@@ -98,11 +116,45 @@ export async function allTags(filters: {
   globPattern?: string;
   query?: string;
   tags?: string[];
+  year?: number;
+  month?: number;
   limit?: number;
 }): Promise<string[]> {
   const zettels = await filterZettels(filters);
   const allTags = zettels.flatMap(z => z.tags || []);
   return [...new Set(allTags)].sort();
+}
+
+export async function availableMonths(filters: {
+  globPattern?: string;
+  query?: string;
+  tags?: string[];
+  limit?: number;
+}): Promise<Map<number, number[]>> {
+  const zettels = await filterZettels({
+    globPattern: filters.globPattern,
+    query: filters.query,
+    tags: filters.tags
+  });
+  
+  let monthMap: Map<number, Set<number>> = new Map();
+  zettels.forEach(zettel => {
+    if (zettel.date) {
+      const year = zettel.date.getFullYear();
+      const month = zettel.date.getMonth();
+      if (!monthMap.has(year)) {
+        monthMap.set(year, new Set<number>());
+      }
+      monthMap.get(year)!.add(month);
+    }
+  });
+
+  const result: Map<number, number[]> = new Map();
+  for (const [year, months] of monthMap.entries()) {
+    result.set(year, Array.from(months).sort((a, b) => b - a));
+  }
+
+  return result;
 }
 
 export async function zettelById(id: string): Promise<ZettelMeta> {
