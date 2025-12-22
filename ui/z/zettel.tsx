@@ -52,7 +52,7 @@ export default function ZettelDisplay({
     case "card":
       return (
         <a
-          className='flex flex-col h-72 p-4 border rounded-[25px] hover:bg-gray-100 overflow-hidden hover:overflow-scroll'
+          className='flex flex-col border-b border-gray-800 p-4 hover:bg-gray-100 overflow-hidden'
           href={`/notes/${id}`}
         >
           {showTitle !== false && <Title />}
