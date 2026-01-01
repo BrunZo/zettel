@@ -1,5 +1,5 @@
 import React from "react";
-import { ZettelMeta } from "../../lib/types";
+import { ZettelMeta, ZettelVersion } from "../../lib/types";
 import Tag from "../components/tag";
 
 export type ZettelProps = ZettelMeta & {
@@ -8,6 +8,7 @@ export type ZettelProps = ZettelMeta & {
   showDate?: boolean;
   showTags?: boolean;
   showAbstract?: boolean;
+  version?: ZettelVersion;
 };
 
 export default function ZettelDisplay({
@@ -21,7 +22,8 @@ export default function ZettelDisplay({
   showTitle,
   showDate,
   showTags,
-  showAbstract
+  showAbstract,
+  version
 }: ZettelProps) {
   function Title() { 
     return <span className={`font-bold ${mode == "full" ? "text-4xl" : "text-2xl"} m-0`}>{title || id}</span> 
@@ -45,6 +47,19 @@ export default function ZettelDisplay({
     return <p className='text-gray-800 text-md'>{abstract}</p>
   }
 
+  function VersionInfo() {
+    if (!version) return null;
+    return (
+      <div className='text-sm text-gray-500 mb-4 border-b border-gray-200 pb-2'>
+        <span>Revision {version.revision}</span>
+        <span className='mx-2'>•</span>
+        <span className='font-mono text-xs'>{version.commitHash.substring(0, 7)}</span>
+        <span className='mx-2'>•</span>
+        <span>{version.commitMessage}</span>
+      </div>
+    );
+  }
+
   switch (mode) {
     case "link":
       return <a className='text-gray-500 hover:text-gray-800' href={`/notes/${id}`}>{title || id}</a>;
@@ -65,6 +80,7 @@ export default function ZettelDisplay({
     case "semi-full":
       return (
         <article className="zettel-semi-full prose">
+          {version && <VersionInfo />}
           {showTitle !== false && <Title />}
           {showDate !== false && <Date />}
           {showTags !== false && tags?.length && <Tags />}
@@ -75,6 +91,7 @@ export default function ZettelDisplay({
     case "full":
       return (
         <article className="zettel-full prose">
+          {version && <VersionInfo />}
           {showTitle !== false && <Title />}
           {showDate !== false && <Date />}
           {showTags !== false && tags?.length && <Tags />}
